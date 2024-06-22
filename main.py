@@ -1,6 +1,8 @@
 # COMP469
 # Christian Walsh
 # Kaylee Groves
+# Jorge Torrez 
+
 import keyboard
 
 class Connect4:
@@ -31,11 +33,16 @@ class Connect4:
     def check_if_winning(self):
         winning_player = None
 
-        # check diagnals
-        # @todo
+        # Check diagonals
+        if self.board[0][0] == self.board[1][1] == self.board[2][2] == self.board[3][3] != ' ':
+            winning_player = self.board[0][0]
+        if self.board[3][0] == self.board[2][1] == self.board[1][2] == self.board[0][3] != ' ':
+            winning_player = self.board[3][0]
 
-        # check rows
-        # @todo
+        # Check rows
+        for row in self.board:
+            if row[0] == row[1] == row[2] == row[3] != ' ':
+                winning_player = row[0]
 
         # check columns
         for col in range(4):
@@ -54,6 +61,13 @@ class Connect4:
 if __name__ == '__main__':
     game = Connect4()
     print("Welcome to Connect 4! Now with AI")
+    print("-----------------------------------------")
+    print("Instructions:")
+    print("1. The game is played on a 4x4 grid.")
+    print("2. Players take turns to drop their pieces (X or O) into one of the columns (0-3).")
+    print("3. The first player to get four of their pieces in a row (vertically, horizontally, or diagonally) wins.")
+    print("4. To make a move, enter the column number (0-3) when prompted.")
+    print("5. Press 'esc' to exit the game at any time.")
     print("-----------------------------------------")
     while True:
 
