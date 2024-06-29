@@ -3,16 +3,18 @@
 # Kaylee Groves
 # Jorge Torrez 
 # Brian Rojas
-
 import keyboard
 
 class Connect4:
     player1 = 'X'
     player2 = 'O'
-    current_player = player1  # this could be X or O
 
     def __init__(self):
+        self.reset_game()
+
+    def reset_game(self):
         self.board = [[' ' for _ in range(7)] for _ in range(6)]
+        self.current_player = self.player1
 
     def print_board(self):
         print("\n")
@@ -60,21 +62,49 @@ class Connect4:
         else:
             return False
 
-
 if __name__ == '__main__':
     game = Connect4()
+    score = {Connect4.player1: 0, Connect4.player2: 0}  # Initialize scores outside the class
+
     print("Welcome to Connect 4! Now with AI")
     print("-----------------------------------------")
     print("Instructions:")
     print("1. The game is played on a 6x7 grid.")
     print("2. Players take turns to drop their pieces (X or O) into one of the columns (0-6).")
     print("3. The first player to get four of their pieces in a row (vertically, horizontally, or diagonally) wins.")
-    print("4. To make a move, enter the column number (0-6) when prompted.")
+    print("4. To make a move, press the corresponding number key (0-6) on your keyboard.")
     print("5. Press 'esc' to exit the game at any time.")
     print("-----------------------------------------")
+    
     while True:
         game.print_board()
-        move = int(input(f"Player {game.get_current_player()}, enter your move: "))
-        game.make_move(move)
-        if keyboard.read_key() == "esc" or game.check_if_winning():
+        print(f"Current turn: Player {game.get_current_player()}")
+        move = None
+        while move is None:
+            key = keyboard.read_event()
+            if key.event_type == keyboard.KEY_DOWN:
+                if key.name in ['0', '1', '2', '3', '4', '5', '6']:
+                    move = int(key.name)
+                elif key.name == 'esc':
+                    break
+        
+        if move is not None:
+            game.make_move(move)
+            if game.check_if_winning():
+                if game.get_current_player() == Connect4.player1:
+                    score[Connect4.player2] += 1
+                else:
+                    score[Connect4.player1] += 1
+                
+                game.print_board()
+                print(f"Score - Player {Connect4.player1}: {score[Connect4.player1]} | Player {Connect4.player2}: {score[Connect4.player2]}")
+                
+                play_again = input("Do you want to play again? (yes/no): ").lower()
+                if play_again == 'yes':
+                    game.reset_game()
+                else:
+                    break
+        else:
             break
+
+    print("Thanks for playing!")
