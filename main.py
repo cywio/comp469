@@ -117,7 +117,6 @@ class Connect4:
             col_items = [item[col] for item in self.board]
             for offset in range(board_size-3):
                 items = col_items[offset:offset+4]
-                print(items)
                 plays = set(items)
                 if len(plays) == 1 and set(items) != {' '}:
                     winning_player = list(plays)[0]
