@@ -6,16 +6,18 @@
 
 import keyboard
 
+board_size = 6
+
 class Connect4:
     player1 = 'X'
-    player2 = 'O'  # AI
+    player2 = 'O'
     current_player = player1  # this could be X or O
 
     def __init__(self):
         self.reset_game()
 
     def reset_game(self):
-        self.board = [[' ' for _ in range(7)] for _ in range(6)]
+        self.board = [[' ' for _ in range(board_size)] for _ in range(board_size)]
         self.current_player = self.player1
 
     def print_board(self):
@@ -29,13 +31,13 @@ class Connect4:
 
     def open_locations(self):
         open_cols = []
-        for col in range(7):
+        for col in range(board_size):
             if self.board[0][col] == ' ':
                 open_cols.append(col)
         return open_cols  # these are open columns (if top row is open, then a piece can be placed there)
 
     def make_move(self, column):
-        for row in reversed(range(6)):
+        for row in reversed(range(board_size)):
             if self.board[row][column] == ' ':
                 self.board[row][column] = self.current_player
                 break
@@ -87,24 +89,26 @@ class Connect4:
         winning_player = None
 
         # Check diagonals
-        for r in range(3):
-            for c in range(4):
-                if self.board[r][c] == self.board[r+1][c+1] == self.board[r+2][c+2] == self.board[r+3][c+3] != ' ':
-                    winning_player = self.board[r][c]
-                if self.board[r+3][c] == self.board[r+2][c+1] == self.board[r+1][c+2] == self.board[r][c+3] != ' ':
-                    winning_player = self.board[r+3][c]
+        # for r in range(3):
+        #     for c in range(4):
+        #         if self.board[r][c] == self.board[r+1][c+1] == self.board[r+2][c+2] == self.board[r+3][c+3] != ' ':
+        #             winning_player = self.board[r][c]
+        #         if self.board[r+3][c] == self.board[r+2][c+1] == self.board[r+1][c+2] == self.board[r][c+3] != ' ':
+        #             winning_player = self.board[r+3][c]
 
         # Check rows
-        for row in self.board:
-            for col in range(4):
-                if row[col] == row[col+1] == row[col+2] == row[col+3] != ' ':
-                    winning_player = row[col]
+        for row in range(board_size):
+            items = self.board[row]
+            plays = set(items)
+            if len(plays) == 1 and set(items) != {' '}:
+                winning_player = list(plays)[0]
 
         # Check columns
-        for col in range(7):
-            for row in range(3):
-                if self.board[row][col] == self.board[row+1][col] == self.board[row+2][col] == self.board[row+3][col] != ' ':
-                    winning_player = self.board[row][col]
+        for col in range(board_size):
+            items = [item[col] for item in self.board]
+            plays = set(items)
+            if len(plays) == 1 and set(items) != {' '}:
+                winning_player = list(plays)[0]
 
         if winning_player:
             print(f"Player {winning_player} wins!")
