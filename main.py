@@ -127,62 +127,9 @@ class Connect4:
         else:
             return [False, None]
 
-
-def evaluate_window(window, piece):
-    score = 0
-    opp_piece = 'O' if piece == 'X' else 'X'
-
-    if window.count(piece) == 4:
-        score += 100
-    elif window.count(piece) == 3 and window.count(' ') == 1:
-        score += 5
-    elif window.count(piece) == 2 and window.count(' ') == 2:
-        score += 2
-
-    if window.count(opp_piece) == 3 and window.count(' ') == 1:
-        score -= 4
-
-    return score
-
-
-def score_position(board, piece):
-    score = 0
-
-    # Score center column
-    center_array = [row[3] for row in board]
-    center_count = center_array.count(piece)
-    score += center_count * 3
-
-    # Score Horizontal
-    for row in board:
-        for c in range(7 - 3):
-            window = row[c:c + 4]
-            score += evaluate_window(window, piece)
-
-    # Score Vertical
-    for c in range(7):
-        col_array = [row[c] for row in board]
-        for r in range(6 - 3):
-            window = col_array[r:r + 4]
-            score += evaluate_window(window, piece)
-
-    # Score positive sloped diagonal
-    for r in range(6 - 3):
-        for c in range(7 - 3):
-            window = [board[r + i][c + i] for i in range(4)]
-            score += evaluate_window(window, piece)
-
-    # Score negative sloped diagonal
-    for r in range(6 - 3):
-        for c in range(7 - 3):
-            window = [board[r + 3 - i][c + i] for i in range(4)]
-            score += evaluate_window(window, piece)
-
-    return score
-
-
 if __name__ == '__main__':
     game = Connect4()
+    
     # Initialize scores outside the class
     score = {Connect4.player1: 0, Connect4.player2: 0}
 
@@ -225,26 +172,3 @@ if __name__ == '__main__':
                 break
 
     print("Thanks for playing!")
-
-    # game.make_move(move)  # X
-    # game.print_board()
-    # game.make_move(0) # O
-    # game.print_board()
-    # game.make_move(0) # X
-    # game.print_board()
-    # game.make_move(3) # O
-    # game.print_board()
-    # game.make_move(3) # X
-    # game.print_board()
-    # game.make_move(2) # O
-    # game.print_board()
-    # game.check_if_winning() # should be false
-    # game.make_move(1) # X
-    # game.make_move(0) # O
-    # game.make_move(1) # X
-    # game.make_move(3) # O
-    # game.make_move(1) # X
-    # game.make_move(3) # O
-    # game.make_move(1) # X
-    # game.print_board()
-    # game.check_if_winning() # should be player X because we have 4 in column 1
