@@ -114,10 +114,13 @@ class Connect4:
 
         # Check columns
         for col in range(board_size):
-            items = [item[col] for item in self.board]
-            plays = set(items)
-            if len(plays) == 1 and set(items) != {' '}:
-                winning_player = list(plays)[0]
+            col_items = [item[col] for item in self.board]
+            for offset in range(board_size-3):
+                items = col_items[offset:offset+4]
+                print(items)
+                plays = set(items)
+                if len(plays) == 1 and set(items) != {' '}:
+                    winning_player = list(plays)[0]
 
         if winning_player:
             print(f"Player {winning_player} wins!")
