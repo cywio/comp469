@@ -195,11 +195,17 @@ if __name__ == '__main__':
 
     while True:
         game.print_board()
+     
         if keyboard.read_key() == "esc":
             break
 
         move = int(input(f"Player {game.get_current_player()}, enter your move: "))
+        if(move >= board_size):
+            print(f"Choose a row that is within 0 to {board_size-1}")
+            continue
+
         game.make_move(move)
+
         if game.check_if_winning()[0]:
             game.print_board()
             if game.get_current_player() == Connect4.player1:
