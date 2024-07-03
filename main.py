@@ -106,10 +106,11 @@ class Connect4:
 
         # Check rows
         for row in range(board_size):
-            items = self.board[row]
-            plays = set(items)
-            if len(plays) == 1 and set(items) != {' '}:
-                winning_player = list(plays)[0]
+            for offset in range(board_size-3):
+                items = self.board[row][offset:offset+4]
+                plays = set(items)
+                if len(plays) == 1 and set(items) != {' '}:
+                    winning_player = list(plays)[0]
 
         # Check columns
         for col in range(board_size):
