@@ -14,6 +14,9 @@ class Connect4:
     current_player = player1  # this could be X or O
 
     def __init__(self):
+        if board_size < 4:
+            print("Board needs to be atleast 4.")
+            exit(1)
         self.reset_game()
 
     def reset_game(self):
@@ -89,12 +92,17 @@ class Connect4:
         winning_player = None
 
         # Check diagonals
-        # for r in range(3):
-        #     for c in range(4):
-        #         if self.board[r][c] == self.board[r+1][c+1] == self.board[r+2][c+2] == self.board[r+3][c+3] != ' ':
-        #             winning_player = self.board[r][c]
-        #         if self.board[r+3][c] == self.board[r+2][c+1] == self.board[r+1][c+2] == self.board[r][c+3] != ' ':
-        #             winning_player = self.board[r+3][c]
+        for row_offset in range(board_size-3):
+            for col_offset in range(board_size-3):
+                items = []
+                for col in range(4):
+                    # start from bottom left corner and check for 4 in a diagonal pattern, then shift to the right
+                    # until it's board size - 4, example: 6 - (6 - 4) = check until 4th offset, then repeat for the
+                    # columns so you offset it upwards from the bottom of the board upward
+                    items.append(self.board[board_size-1-(row_offset+col)][col+col_offset])
+                plays = set(items)
+                if len(plays) == 1 and set(items) != {' '}:
+                    winning_player = list(plays)[0]
 
         # Check rows
         for row in range(board_size):
