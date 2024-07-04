@@ -15,7 +15,7 @@ class Connect4:
 
     def __init__(self):
         if board_size < 4:
-            print("Board needs to be atleast 4.")
+            print("Board needs to be at least 4.")
             exit(1)
         self.reset_game()
 
@@ -37,7 +37,7 @@ class Connect4:
         for col in range(board_size):
             if self.board[0][col] == ' ':
                 open_cols.append(col)
-        return open_cols  # these are open columns (if top row is open, then a piece can be placed there)
+        return open_cols
 
     def make_move(self, column):
         for row in reversed(range(board_size)):
@@ -51,22 +51,49 @@ class Connect4:
 
     def minimax(self, depth, maximizingPlayer):
         open_columns = self.open_locations()
-
-        if self.is_ending_move() or depth == 0:
-            if self.is_ending_move():
-                winning_player = self.check_if_winning()[1]
-                print(winning_player)
-                if winning_player == "X":
-                    return (None, -10000000000000)  # X will be player we don't want to win
-                elif winning_player == "O":
-                    return (None, 10000000000000)
-            else:  # depth of 0
-                return (None, 0)
+        is_terminal = self.is_ending_move()
+        if is_terminal or depth == 0:
+            if is_terminal:
+                if self.check_if_winning()[1] == self.player1:
+                    return (None, float('inf'))  # player1 wins
+                elif self.check_if_winning()[1] == self.player2:
+                    return (None, float('-inf'))  # player2 wins
+                else:
+                    return (None, 0)  # Game is a tie
+            return (None, 0)  # Depth is zero
 
         if maximizingPlayer:
-            pass
-        else:  # minimizingPlayer
-            pass
+            value = float('-inf')
+            column = open_columns[0]
+            for col in open_columns:
+                for row in reversed(range(board_size)):
+                    if self.board[row][col] == ' ':
+                        self.board[row][col] = self.current_player
+                        break
+                self.current_player = self.player2
+                new_score = self.minimax(depth - 1, False)[1]
+                self.board[row][col] = ' '
+                self.current_player = self.player1
+                if new_score > value:
+                    value = new_score
+                    column = col
+            return column, value
+        else:
+            value = float('inf')
+            column = open_columns[0]
+            for col in open_columns:
+                for row in reversed(range(board_size)):
+                    if self.board[row][col] == ' ':
+                        self.board[row][col] = self.current_player
+                        break
+                self.current_player = self.player1
+                new_score = self.minimax(depth - 1, True)[1]
+                self.board[row][col] = ' '
+                self.current_player = self.player2
+                if new_score < value:
+                    value = new_score
+                    column = col
+            return column, value
          
     #Pseudocode template
     # minimax(node, depth, maximizingPlayer) is
@@ -127,10 +154,9 @@ class Connect4:
         else:
             return [False, None]
 
+
 if __name__ == '__main__':
     game = Connect4()
-    
-    # Initialize scores outside the class
     score = {Connect4.player1: 0, Connect4.player2: 0}
 
     print("Welcome to Connect 4! Now with AI")
@@ -155,6 +181,10 @@ if __name__ == '__main__':
             continue
 
         game.make_move(move)
+
+        # Suggest the next move
+        suggested_move, _ = game.minimax(3, game.current_player == game.player1)  # You can adjust the depth based on performance needs
+        print(f"Suggested next move for Player {game.get_current_player()}: Column {suggested_move}")
 
         if game.check_if_winning()[0]:
             game.print_board()
