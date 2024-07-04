@@ -49,6 +49,12 @@ class Connect4:
     def is_ending_move(self):
         return self.check_if_winning()[0] or len(self.open_locations()) == 0
 
+    def assign_heuristic_value(self, piece):
+        # TODO
+        # assign heuristic value to location
+        value = 0
+        return value
+
     def minimax(self, depth, maximizingPlayer):
         open_columns = self.open_locations()
         is_terminal = self.is_ending_move()
@@ -60,7 +66,7 @@ class Connect4:
                     return (None, float('-inf'))  # player2 wins
                 else:
                     return (None, 0)  # Game is a tie
-            return (None, 0)  # Depth is zero
+            return (None, self.assign_heuristic_value(self.current_player))  # Depth is zero
 
         if maximizingPlayer:
             value = float('-inf')
@@ -94,8 +100,8 @@ class Connect4:
                     value = new_score
                     column = col
             return column, value
-         
-    #Pseudocode template
+
+    # Pseudocode template
     # minimax(node, depth, maximizingPlayer) is
     #     if depth = 0 or node is a terminal node then
     #     return the
@@ -119,22 +125,22 @@ class Connect4:
         winning_player = None
 
         # Check diagonals
-        for row_offset in range(board_size-3):
-            for col_offset in range(board_size-3):
+        for row_offset in range(board_size - 3):
+            for col_offset in range(board_size - 3):
                 items = []
                 for col in range(4):
                     # start from bottom left corner and check for 4 in a diagonal pattern, then shift to the right
                     # until it's board size - 4, example: 6 - (6 - 4) = check until 4th offset, then repeat for the
                     # columns so you offset it upwards from the bottom of the board upward
-                    items.append(self.board[board_size-1-(row_offset+col)][col+col_offset])
+                    items.append(self.board[board_size - 1 - (row_offset + col)][col + col_offset])
                 plays = set(items)
                 if len(plays) == 1 and set(items) != {' '}:
                     winning_player = list(plays)[0]
 
         # Check rows
         for row in range(board_size):
-            for offset in range(board_size-3):
-                items = self.board[row][offset:offset+4]
+            for offset in range(board_size - 3):
+                items = self.board[row][offset:offset + 4]
                 plays = set(items)
                 if len(plays) == 1 and set(items) != {' '}:
                     winning_player = list(plays)[0]
@@ -142,14 +148,13 @@ class Connect4:
         # Check columns
         for col in range(board_size):
             col_items = [item[col] for item in self.board]
-            for offset in range(board_size-3):
-                items = col_items[offset:offset+4]
+            for offset in range(board_size - 3):
+                items = col_items[offset:offset + 4]
                 plays = set(items)
                 if len(plays) == 1 and set(items) != {' '}:
                     winning_player = list(plays)[0]
 
         if winning_player:
-            print(f"Player {winning_player} wins!")
             return [True, winning_player]
         else:
             return [False, None]
@@ -162,38 +167,44 @@ if __name__ == '__main__':
     print("Welcome to Connect 4! Now with AI")
     print("-----------------------------------------")
     print("Instructions:")
-    print("1. The game is played on a 6x7 grid.")
+    print("1. The game is played on a 6x6 grid.")
     print("2. Players take turns to drop their pieces (X or O) into one of the columns (0-6).")
     print("3. The first player to get four of their pieces in a row (vertically, horizontally, or diagonally) wins.")
     print("4. To make a move, press the corresponding number key (0-6) on your keyboard.")
-    print("5. Press 'esc' to exit the game at any time.")
+    print("5. Press 'q' to exit the game at any time.")
     print("-----------------------------------------")
 
     while True:
         game.print_board()
-     
-        if keyboard.read_key() == "esc":
+
+        if keyboard.read_key() == "q":
             break
 
+        player = game.current_player
+
         move = int(input(f"Player {game.get_current_player()}, enter your move: "))
-        if(move >= board_size):
-            print(f"Choose a row that is within 0 to {board_size-1}")
+        if (move >= board_size):
+            print(f"Choose a row that is within 0 to {board_size - 1}")
             continue
 
         game.make_move(move)
 
         # Suggest the next move
-        suggested_move, _ = game.minimax(3, game.current_player == game.player1)  # You can adjust the depth based on performance needs
+        suggested_move, _ = game.minimax(3,
+                                         game.current_player == game.player1)  # You can adjust the depth based on performance needs
         print(f"Suggested next move for Player {game.get_current_player()}: Column {suggested_move}")
 
         if game.check_if_winning()[0]:
             game.print_board()
+            print(f"Player {player} wins!")
+
             if game.get_current_player() == Connect4.player1:
                 score[Connect4.player2] += 1
             else:
                 score[Connect4.player1] += 1
 
-            print(f"Score - Player {Connect4.player1}: {score[Connect4.player1]} | Player {Connect4.player2}: {score[Connect4.player2]}")
+            print(
+                f"Score - Player {Connect4.player1}: {score[Connect4.player1]} | Player {Connect4.player2}: {score[Connect4.player2]}")
 
             play_again = input("Do you want to play again? (yes/no): ").lower()
             if play_again == 'yes':
