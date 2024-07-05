@@ -4,9 +4,9 @@
 # Jorge Torrez
 # Brian Rojas
 
-import keyboard
+# import keyboard
 
-board_size = 6
+board_size = 4
 
 
 class Connect4:
@@ -21,7 +21,8 @@ class Connect4:
         self.reset_game()
 
     def reset_game(self):
-        self.board = [[' ' for _ in range(board_size)] for _ in range(board_size)]
+        self.board = [[' ' for _ in range(board_size)]
+                      for _ in range(board_size)]
         self.current_player = self.player1
 
     def print_board(self):
@@ -66,7 +67,7 @@ class Connect4:
                     scoring_row.append(column_values[r + k])
                 value += self.score_row(scoring_row, piece)
 
-        ## Score Horizontal
+        # Score Horizontal
         for row in range(board_size):
             row_values = []
             for column in range(board_size):
@@ -106,7 +107,8 @@ class Connect4:
                     return (None, float('-inf'))  # player2 wins
                 else:
                     return (None, 0)  # Game is a tie
-            return (None, self.assign_heuristic_value(self.current_player))  # Depth is zero
+            # Depth is zero
+            return (None, self.assign_heuristic_value(self.current_player))
 
         if maximizingPlayer:
             value = float('-inf')
@@ -172,7 +174,8 @@ class Connect4:
                     # start from bottom left corner and check for 4 in a diagonal pattern, then shift to the right
                     # until it's board size - 4, example: 6 - (6 - 4) = check until 4th offset, then repeat for the
                     # columns so you offset it upwards from the bottom of the board upward
-                    items.append(self.board[board_size - 1 - (row_offset + col)][col + col_offset])
+                    items.append(
+                        self.board[board_size - 1 - (row_offset + col)][col + col_offset])
                 plays = set(items)
                 if len(plays) == 1 and set(items) != {' '}:
                     winning_player = list(plays)[0]
@@ -217,14 +220,19 @@ if __name__ == '__main__':
     while True:
         game.print_board()
 
-        if keyboard.read_key() == "q":
-            break
+        # if keyboard.read_key() == "q":
+        #     break
 
         player = game.current_player
 
-        move = int(input(f"Player {game.get_current_player()}, enter your move: "))
+        move_input = input(
+            f"Player {game.get_current_player()}, enter your move: ")
+        if not move_input.isdigit():
+            print(f"Enter a number within 0 to {board_size-1}")
+            continue
+        move = int(move_input)
         if (move >= board_size):
-            print(f"Choose a row that is within 0 to {board_size - 1}")
+            print(f"Choose a row that is within 0 to {board_size-1}")
             continue
 
         game.make_move(move)
@@ -232,7 +240,8 @@ if __name__ == '__main__':
         # Suggest the next move
         suggested_move, _ = game.minimax(3,
                                          game.current_player == game.player1)  # You can adjust the depth based on performance needs
-        print(f"Suggested next move for Player {game.get_current_player()}: Column {suggested_move}")
+        print(
+            f"Suggested next move for Player {game.get_current_player()}: Column {suggested_move}")
 
         if game.check_if_winning()[0]:
             game.print_board()
@@ -242,6 +251,19 @@ if __name__ == '__main__':
                 score[Connect4.player2] += 1
             else:
                 score[Connect4.player1] += 1
+
+            print(
+                f"Score - Player {Connect4.player1}: {score[Connect4.player1]} | Player {Connect4.player2}: {score[Connect4.player2]}")
+
+            play_again = input("Do you want to play again? (yes/no): ").lower()
+            if play_again == 'yes':
+                game.reset_game()
+            else:
+                break
+
+        if len(game.open_locations()) == 0:
+            game.print_board()
+            print(f"Tie Game")
 
             print(
                 f"Score - Player {Connect4.player1}: {score[Connect4.player1]} | Player {Connect4.player2}: {score[Connect4.player2]}")
