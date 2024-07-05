@@ -8,6 +8,7 @@ import keyboard
 
 board_size = 6
 
+
 class Connect4:
     player1 = 'X'
     player2 = 'O'
@@ -50,10 +51,49 @@ class Connect4:
         return self.check_if_winning()[0] or len(self.open_locations()) == 0
 
     def assign_heuristic_value(self, piece):
-        # TODO
+        # TODO diagonals
         # assign heuristic value to location
         value = 0
+
+        # VERTICAL
+        for c in range(board_size):
+            column_values = []
+            for r in range(board_size):
+                column_values.append(self.board[r][c])
+            for r in range(board_size - 3):
+                scoring_row = []
+                for k in range(4):
+                    scoring_row.append(column_values[r + k])
+                value += self.score_row(scoring_row, piece)
+
+        ## Score Horizontal
+        for row in range(board_size):
+            row_values = []
+            for column in range(board_size):
+                row_values.append(self.board[r][column])
+                scoring_row = []
+            for column in range(board_size - 4):
+                for k in range(4):
+                    scoring_row.append(row_values[column + k])
+                value += self.score_row(scoring_row, piece)
+
         return value
+
+    def score_row(self, row, piece):
+        # will change these scores/add more rules soon
+        score = 0
+        opp_piece = self.player1 if self.current_player == self.player2 else self.player2
+
+        if row.count(piece) == 4:
+            score += 100
+        elif row.count(piece) == 3 and row.count(' ') == 1:
+            score += 5
+        elif row.count(piece) == 2 and row.count(' ') == 2:
+            score += 2
+
+        if row.count(opp_piece) == 3 and row.count(' ') == 1:
+            score -= 4
+        return score
 
     def minimax(self, depth, maximizingPlayer):
         open_columns = self.open_locations()
