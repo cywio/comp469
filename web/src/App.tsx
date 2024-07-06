@@ -8,6 +8,7 @@ type Cell = 'X' | 'O' | ' '
 type Board = Cell[][]
 
 export default function App() {
+	const [maxDepth, setMaxDepth] = useState<number>(4)
 	const [board, setBoard] = useState<Board>(Array.from({ length: 6 }, () => Array.from({ length: 6 }, () => ' ')))
 	const [winningPlayer, setWinningPlayer] = useState<Player | 'tie' | null>(null)
 	const [currentPlayer, setCurrentPlayer] = useState<Player>(Player.X)
@@ -64,7 +65,7 @@ export default function App() {
 			body: JSON.stringify({
 				board: board,
 				current_player: currentPlayer,
-				max_depth: 4,
+				max_depth: maxDepth,
 			}),
 			headers: {
 				'Content-Type': 'application/json',
@@ -126,11 +127,22 @@ export default function App() {
 							<b>Current player: {currentPlayer}</b>
 							<p className='text-sm'>
 								Suggestion: Drop into column {currentSuggestion?.top_suggestion.column} (score:{' '}
-								{currentSuggestion?.top_suggestion.score})
+								{currentSuggestion?.top_suggestion.score ?? '∞'})
 							</p>
 						</div>
 					</>
 				)}
+				<div className='flex items-center justify-center text-xs mt-5 gap-3 mx-auto'>
+					<p>Max Depth: </p>
+					<input
+						className='w-20 rounded bg-neutral-100 p-1'
+						type='number'
+						onChange={(e) => setMaxDepth(parseInt(e.target.value))}
+						value={maxDepth}
+						max='7'
+						min='1'
+					/>
+				</div>
 			</div>
 		</main>
 	)

@@ -125,7 +125,7 @@ class Connect4:
                         break
                 self.current_player = self.player2
                 # recursively check and decrease depth to limit recursion
-                _, new_score, _ = self.minimax(depth - 1, False)
+                _, new_score, _ = self.minimax(False, depth - 1)
                 # reset the board to the original state
                 self.board[row][col] = ' '
                 self.current_player = self.player1
@@ -148,7 +148,7 @@ class Connect4:
                         self.board[row][col] = self.current_player
                         break
                 self.current_player = self.player1
-                _, new_score, _ = self.minimax(depth - 1, True)
+                _, new_score, _ = self.minimax(True, depth - 1)
                 self.board[row][col] = ' '
                 self.current_player = self.player2
                 if new_score < value:

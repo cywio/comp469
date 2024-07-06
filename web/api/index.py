@@ -22,7 +22,8 @@ def assist():
     game.board = data['board']
     game.current_player = data['current_player']
 
-    suggested_move, score, history = game.minimax(True, data['max_depth'])
+    suggested_move, score, history = game.minimax(
+        True, depth=int(data['max_depth']))
 
     response = json.dumps(
         {
