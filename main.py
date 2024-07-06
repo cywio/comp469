@@ -168,6 +168,17 @@ class Connect4:
                 if len(plays) == 1 and set(items) != {' '}:
                     winning_player = list(plays)[0]
 
+        for row_offset in reversed(range(3, board_size)):
+            for col_offset in reversed(range(3, board_size)):
+                items = []
+                for col in range(4):
+                    items.append(
+                        self.board[row_offset - col][col_offset - col])
+                print(items)
+                plays = set(items)
+                if len(plays) == 1 and set(items) != {' '}:
+                    winning_player = list(plays)[0]
+
         # Check rows
         for row in range(board_size):
             for offset in range(board_size - 3):
