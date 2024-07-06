@@ -56,12 +56,16 @@ def make_move():
 
     is_game_won, winner = game.check_if_winning()
 
+    is_game_complete = is_game_won or len(game.open_locations()) == 0
+
     response = json.dumps(
         {
             "current_board": game.board,
             "open_locations": game.open_locations(),
             "board_state": {
+                "is_game_complete": is_game_complete,
                 "is_game_won": is_game_won,
+                "is_tie": not is_game_won and len(game.open_locations()) == 0,
                 "winner": winner,
             },
         }).encode('utf-8')

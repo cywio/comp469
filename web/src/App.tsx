@@ -9,7 +9,7 @@ type Board = Cell[][]
 
 export default function App() {
 	const [board, setBoard] = useState<Board>(Array.from({ length: 6 }, () => Array.from({ length: 6 }, () => ' ')))
-	const [winningPlayer, setWinningPlayer] = useState<Player | null>(null)
+	const [winningPlayer, setWinningPlayer] = useState<Player | 'tie' | null>(null)
 	const [currentPlayer, setCurrentPlayer] = useState<Player>(Player.X)
 	const [openLocations, setOpenLocations] = useState<number[]>([0, 1, 2, 3, 4, 5])
 	const [currentSuggestion, setCurrentSuggestion] = useState<{
@@ -36,15 +36,21 @@ export default function App() {
 			current_board: Board
 			open_locations: number[]
 			board_state: {
+				is_game_complete: boolean
 				is_game_won: boolean
+				is_tie: boolean
 				winner: Player | null
 			}
 		}
 		setOpenLocations(data.open_locations)
 		setCurrentPlayer((curr) => (curr == Player.X ? Player.O : Player.X))
 		setBoard(data.current_board)
-		if (data.board_state.is_game_won) {
-			setWinningPlayer(data.board_state.winner)
+		if (data.board_state.is_game_complete) {
+			if (!data.board_state.is_tie) {
+				setWinningPlayer(data.board_state.winner)
+			} else {
+				setWinningPlayer('tie')
+			}
 		}
 	}
 
@@ -104,14 +110,15 @@ export default function App() {
 							))}
 						</div>
 					)}
-					<h1 className='bg-green-500 text-white'>{winningPlayer && <>Game won by {winningPlayer}!!</>}</h1>
+					{winningPlayer && winningPlayer === 'tie' && <h1 className='bg-orange-500 text-white'>Tie game</h1>}
+					{winningPlayer && winningPlayer !== 'tie' && <h1 className='bg-green-500 text-white'>Game won by {winningPlayer}!!</h1>}
 				</div>
 				{!winningPlayer && (
 					<>
 						{currentSuggestion?.column_scores && (
 							<div className='grid grid-cols-6'>
 								{Array.from({ length: 6 }).map((_, index) => (
-									<div className='bg-neutral-200 text-xs py-2'>{currentSuggestion?.column_scores[index] ?? 'I'}</div>
+									<div className='bg-neutral-200 text-xs py-2'>{currentSuggestion?.column_scores[index] ?? '∞'}</div>
 								))}
 							</div>
 						)}
