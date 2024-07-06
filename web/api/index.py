@@ -64,6 +64,7 @@ def make_move():
     response = json.dumps(
         {
             "current_board": game.board,
+            "open_locations": game.open_locations(),
             "board_state": {
                 "is_game_won": is_game_won,
                 "winner": winner,
