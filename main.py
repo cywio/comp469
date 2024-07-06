@@ -201,15 +201,15 @@ class Connect4:
 
 if __name__ == '__main__':
     game = Connect4()
-    score = {Connect4.player1: 0, Connect4.player2: 0}
+    scores = {Connect4.player1: 0, Connect4.player2: 0}
 
     print("Welcome to Connect 4! Now with AI")
     print("-----------------------------------------")
     print("Instructions:")
     print("1. The game is played on a 6x6 grid.")
-    print("2. Players take turns to drop their pieces (X or O) into one of the columns (0-6).")
+    print("2. Players take turns to drop their pieces (X or O) into one of the columns (0-5).")
     print("3. The first player to get four of their pieces in a row (vertically, horizontally, or diagonally) wins.")
-    print("4. To make a move, press the corresponding number key (0-6) on your keyboard.")
+    print("4. To make a move, press the corresponding number key (0-5) on your keyboard.")
     print("5. Press CTRL+C to exit the game at any time.")
     print("-----------------------------------------")
 
@@ -231,8 +231,8 @@ if __name__ == '__main__':
                 print(f"Enter a number within 0 to {board_size-1}")
                 continue
             move = int(move_input)
-            if (move >= board_size):
-                print(f"Choose a row that is within 0 to {board_size-1}")
+            if move < 0 or move >= board_size:
+                print(f"Choose a column that is within 0 to {board_size-1}")
                 continue
 
             game.make_move(move)
@@ -242,12 +242,12 @@ if __name__ == '__main__':
                 print(f"Player {player} wins!")
 
                 if game.get_current_player() == Connect4.player1:
-                    score[Connect4.player2] += 1
+                    scores[Connect4.player2] += 1
                 else:
-                    score[Connect4.player1] += 1
+                    scores[Connect4.player1] += 1
 
                 print(
-                    f"Score - Player {Connect4.player1}: {score[Connect4.player1]} | Player {Connect4.player2}: {score[Connect4.player2]}")
+                    f"Score - Player {Connect4.player1}: {scores[Connect4.player1]} | Player {Connect4.player2}: {scores[Connect4.player2]}")
 
                 play_again = input(
                     "Do you want to play again? (yes/no): ").lower()
@@ -261,7 +261,7 @@ if __name__ == '__main__':
                 print(f"Tie Game")
 
                 print(
-                    f"Score - Player {Connect4.player1}: {score[Connect4.player1]} | Player {Connect4.player2}: {score[Connect4.player2]}")
+                    f"Score - Player {Connect4.player1}: {scores[Connect4.player1]} | Player {Connect4.player2}: {scores[Connect4.player2]}")
 
                 play_again = input(
                     "Do you want to play again? (yes/no): ").lower()
