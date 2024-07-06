@@ -1,0 +1,7 @@
+{
+	"rewrites": [{ "source": "/api/(.*)", "destination": "/api/index" }],
+	"framework": "vite",
+	"buildCommand": "cp -a ../lib . && vite build",
+	"devCommand": "cp -a ../lib . && vite --port $PORT",
+	"regions": ["sfo1"]
+}

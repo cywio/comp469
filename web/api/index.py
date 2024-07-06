@@ -14,6 +14,11 @@ import math
 app = Flask(__name__)
 
 
+@app.route('/api/ok')
+def check():
+    return "ok"
+
+
 @app.route('/api/suggest', methods=["POST"])
 def assist():
     data = request.get_json(silent=True)
