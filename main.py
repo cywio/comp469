@@ -54,11 +54,9 @@ class Connect4:
         for row in range(board_size):
             for offset in range(board_size - 3):
                 # rows
-                score += self.score_move(self.board[row]
-                                         [:][offset:offset + 4], player)
+                score += self.score_move(self.board[row][offset:offset + 4], player)
                 # columns
-                score += self.score_move([item[row]
-                                          for item in self.board][offset:offset + 4], player)
+                score += self.score_move([item[offset] for item in self.board[row:row + 4]], player)
 
         # diagonals
         for row in range(board_size-3):
@@ -75,7 +73,7 @@ class Connect4:
     def score_move(self, move, player):
         # will change these scores/add more rules soon
         score = 0
-        other_player = self.player1 if self.current_player == self.player2 else self.player2
+        other_player = self.player1 if player == self.player2 else self.player2
 
         empty_count = move.count(' ')
         player_count = move.count(player)
@@ -174,7 +172,6 @@ class Connect4:
                 for col in range(4):
                     items.append(
                         self.board[row_offset - col][col_offset - col])
-                print(items)
                 plays = set(items)
                 if len(plays) == 1 and set(items) != {' '}:
                     winning_player = list(plays)[0]
