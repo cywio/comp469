@@ -30,7 +30,7 @@ def assist():
                 "column": suggested_move,
                 "score": None if not math.isfinite(score) else score,
             },
-            "column_scores": {str(i): j[1] for i, j in enumerate(history)},
+            "column_scores": {str(i): (None if not math.isfinite(j[1]) else j[1]) for i, j in enumerate(history)},
         }).encode('utf-8')
 
     # lambda will store the game instance so we need to reset on

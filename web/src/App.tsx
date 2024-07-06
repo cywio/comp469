@@ -11,7 +11,7 @@ export default function App() {
 	const [board, setBoard] = useState<Board>(Array.from({ length: 6 }, () => Array.from({ length: 6 }, () => ' ')))
 	const [winningPlayer, setWinningPlayer] = useState<Player | 'tie' | null>(null)
 	const [currentPlayer, setCurrentPlayer] = useState<Player>(Player.X)
-	const [openLocations, setOpenLocations] = useState<number[]>([0, 1, 2, 3, 4, 5])
+	const [openLocations, setOpenLocations] = useState<number[]>(Array.from({ length: 6 }).map((_, i) => i))
 	const [currentSuggestion, setCurrentSuggestion] = useState<{
 		column_scores: Record<string, number>
 		top_suggestion: {
@@ -102,7 +102,7 @@ export default function App() {
 									disabled={!openLocations.includes(j)}
 									className='disabled:opacity-20 group text-white rounded hover:bg-black/25'
 									onClick={() => makeMove(j)}
-									style={{ backgroundColor: currentSuggestion?.top_suggestion.column === j ? 'orange' : 'transparent' }}
+									style={{ backgroundColor: currentSuggestion?.top_suggestion.column === j ? 'orange' : undefined }}
 								>
 									<span className='group-hover:hidden'>{j}</span>
 									<span className='group-hover:block hidden'>↑</span>
