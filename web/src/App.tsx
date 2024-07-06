@@ -1,13 +1,16 @@
 import { useEffect, useState } from 'react'
 
-type Player = 'X' | 'O'
+enum Player {
+	X = 'X',
+	O = 'O',
+}
 type Cell = 'X' | 'O' | ' '
 type Board = Cell[][]
 
 export default function App() {
 	const [board, setBoard] = useState<Board>(Array.from({ length: 6 }, () => Array.from({ length: 6 }, () => ' ')))
-	const [winningPlayer, setWinningPlayer] = useState<'X' | 'O' | null>(null)
-	const [currentPlayer, setCurrentPlayer] = useState<'X' | 'O'>('X')
+	const [winningPlayer, setWinningPlayer] = useState<Player | null>(null)
+	const [currentPlayer, setCurrentPlayer] = useState<Player>(Player.X)
 	const [openLocations, setOpenLocations] = useState<number[]>([0, 1, 2, 3, 4, 5])
 	const [currentSuggestion, setCurrentSuggestion] = useState<{
 		column_scores: Record<string, number>
@@ -38,7 +41,7 @@ export default function App() {
 			}
 		}
 		setOpenLocations(data.open_locations)
-		setCurrentPlayer((curr) => (curr == 'X' ? 'O' : 'X'))
+		setCurrentPlayer((curr) => (curr == Player.X ? Player.O : Player.X))
 		setBoard(data.current_board)
 		if (data.board_state.is_game_won) {
 			setWinningPlayer(data.board_state.winner)
