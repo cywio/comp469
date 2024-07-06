@@ -217,20 +217,17 @@ if __name__ == '__main__':
             print(
                 f"Suggested next move for Player {game.get_current_player()}: Column {suggested_move} (score: {score})")
 
-            if game.current_player == game.player2:
-                game.make_move(suggested_move)
-            else:
-                move_input = input(
-                    f"Player {game.get_current_player()}, enter your move: ")
-                if not move_input.isdigit():
-                    print(f"Enter a number within 0 to {board_size-1}")
-                    continue
-                move = int(move_input)
-                if (move >= board_size):
-                    print(f"Choose a row that is within 0 to {board_size-1}")
-                    continue
+            move_input = input(
+                f"Player {game.get_current_player()}, enter your move: ")
+            if not move_input.isdigit():
+                print(f"Enter a number within 0 to {board_size-1}")
+                continue
+            move = int(move_input)
+            if (move >= board_size):
+                print(f"Choose a row that is within 0 to {board_size-1}")
+                continue
 
-                game.make_move(move)
+            game.make_move(move)
 
             if game.check_if_winning()[0]:
                 game.print_board()
