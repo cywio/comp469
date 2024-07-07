@@ -123,7 +123,14 @@ export default function App() {
 						</div>
 					)}
 					{winningPlayer && winningPlayer === 'tie' && <h1 className='bg-orange-500 text-white'>Tie game</h1>}
-					{winningPlayer && winningPlayer !== 'tie' && <h1 className='bg-green-500 text-white'>Game won by {winningPlayer}!!</h1>}
+					{winningPlayer && winningPlayer !== 'tie' && (
+						<h1 className='bg-green-500 text-white'>
+							Game won by {winningPlayer}!!{' '}
+							<button className='underline' onClick={() => window.location.reload()}>
+								Replay
+							</button>
+						</h1>
+					)}
 				</div>
 				{!winningPlayer && (
 					<>
