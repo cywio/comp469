@@ -49,31 +49,6 @@ class Connect4:
                 break
         self.current_player = self.player1 if self.current_player == self.player2 else self.player2
 
-    def assign_heuristic_value(self, player):
-        score = 0
-
-        # rows
-        for row in range(board_size):
-            for offset in range(board_size - 3):
-                # rows
-                score += self.score_move(self.board[row]
-                                         [offset:offset + 4], player)
-                # columns
-                score += self.score_move([item[offset]
-                                         for item in self.board[row:row + 4]], player)
-
-        # diagonals
-        for row in range(board_size-3):
-            for col in range(board_size-3):
-                # backwards
-                score += self.score_move([self.board[row + i][col + i]
-                                          for i in range(4)], player)
-                # forward
-                score += self.score_move([self.board[row + 3 - i][col + i]
-                                          for i in range(4)], player)
-
-        return score
-
     def score_move(self, move, player):
         # will change these scores/add more rules soon
         score = 0
@@ -101,7 +76,7 @@ class Connect4:
         if is_leaf_node or depth == 0:
             if is_leaf_node:
                 # if either player wins at this stage, then return highest possible
-                # score to indicate it's over
+                # score to indicate it's over, no need to run the rest of the code
                 winning_player = self.check_if_winning()[1]
                 if winning_player == self.player1:
                     return None, float('inf'), None  # player1 wins
@@ -109,53 +84,62 @@ class Connect4:
                     return None, float('-inf'), None  # player2 wins
                 else:
                     return None, 0, None  # Game is a tie
-            # If we've reached the max depth, just assign the heuristic value
-            return None, self.assign_heuristic_value(self.current_player), None
+            # If we've reached the max depth, just assign the heuristic value to each possible move
+            score = 0
 
-        # maximize the score for the current player
-        if maximizingPlayer:
-            value = float('-inf')
-            column = open_columns[0]
-            history = []
-            for col in open_columns:
-                # borrow board from the current state and seek ahead
-                for row in reversed(range(board_size)):
-                    if self.board[row][col] == ' ':
-                        self.board[row][col] = self.current_player
-                        break
-                self.current_player = self.player2
-                # recursively check and decrease depth to limit recursion
-                _, new_score, _ = self.minimax(False, depth - 1)
-                # reset the board to the original state
-                self.board[row][col] = ' '
-                self.current_player = self.player1
-                # if we get a better high score than previous best, then set new column
-                # to be the best next move
+            # rows
+            for row in range(board_size):
+                for offset in range(board_size - 3):
+                    # rows
+                    score += self.score_move(self.board[row]
+                                             [offset:offset + 4], self.current_player)
+                    # columns
+                    score += self.score_move([item[offset]
+                                              for item in self.board[row:row + 4]], self.current_player)
+
+            # diagonals
+            for row in range(board_size-3):
+                for col in range(board_size-3):
+                    # backwards
+                    score += self.score_move([self.board[row + i][col + i]
+                                              for i in range(4)], self.current_player)
+                    # forward
+                    score += self.score_move([self.board[row + 3 - i][col + i]
+                                              for i in range(4)], self.current_player)
+
+            return None, score, None
+
+        # maximize or minimize the score for the current player
+        value = float('-inf' if maximizingPlayer else 'inf')
+        column = open_columns[0]
+        history = []
+        for col in open_columns:
+            # borrow board from the current state and seek ahead
+            for row in reversed(range(board_size)):
+                if self.board[row][col] == ' ':
+                    self.board[row][col] = self.current_player
+                    break
+            self.current_player = self.player2 if self.current_player == self.player1 else self.player1
+            # recursively check and decrease depth to limit recursion
+            _, new_score, _ = self.minimax(not maximizingPlayer, depth - 1)
+            # reset the board to the original state
+            self.board[row][col] = ' '
+            self.current_player = self.player1 if self.current_player == self.player2 else self.player2
+            # if we get a better high score than previous best, then set new column
+            # to be the best next move
+            if maximizingPlayer:
+                # maximize score
                 if new_score > value:
-                    value = new_score
+                    value = max(value, new_score)
                     column = col
-                history.append([col, new_score])
-            return column, value, history
-        # minimize the score for the opponent
-        else:
-            # same as above, just flip player and score
-            value = float('inf')
-            column = open_columns[0]
-            history = []
-            for col in open_columns:
-                for row in reversed(range(board_size)):
-                    if self.board[row][col] == ' ':
-                        self.board[row][col] = self.current_player
-                        break
-                self.current_player = self.player1
-                _, new_score, _ = self.minimax(True, depth - 1)
-                self.board[row][col] = ' '
-                self.current_player = self.player2
+            else:
+                # minimize score
                 if new_score < value:
-                    value = new_score
+                    value = min(value, new_score)
                     column = col
-                history.append([col, new_score])
-            return column, value, history
+            # keep track of columns as to not just return the best move
+            history.append([col, new_score])
+        return column, value, history
 
     def check_if_winning(self):
         winning_player = None
