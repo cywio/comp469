@@ -116,8 +116,11 @@ class Connect4:
             for row in range(board_size):
                 for offset in range(board_size - 3):
                     # rows
-                    score += self.score_move(self.board[row]
-                                             [offset:offset + 4], self.current_player)
+                    base_score = self.score_move(self.board[row]
+                                                 [offset:offset + 4], self.current_player)
+                    # give bonus points to the rows towards the bottom since those have a higher change of winning
+                    lower_row_bonus = board_size - row
+                    score += base_score + lower_row_bonus
                     # columns
                     score += self.score_move([item[row]
                                               for item in self.board[offset:offset + 4]], self.current_player)
@@ -141,12 +144,11 @@ class Connect4:
             # borrow board from the current state and seek ahead
             for row in reversed(range(board_size)):
                 if self.board[row][col] == ' ':
+                    # if we are maximizing then we want to maximize the current player, otherwise if we are
+                    # minimizing, then we want to minimize the other player
                     self.board[row][col] = self.current_player if maximizingPlayer else self.get_opponent(
                         self.current_player)
                     break
-            # if we are maximizing then we want to maximize the current player, otherwise if we are
-            # minimizing, then we want to minimize the other player
-            # self.current_player = self.get_opponent(self.current_player)
             # recursively check and decrease depth to limit recursion
             _, new_score, _ = self.minimax(
                 not maximizingPlayer, depth - 1)
