@@ -35,7 +35,7 @@ def assist():
     response = json.dumps(
         {
             "top_suggestion": {
-                "column": suggested_move,
+                "columns": suggested_move,
                 "score": None if not math.isfinite(score) else score,
             },
             "column_scores": {str(i): (parse_score(j[1])) for i, j in enumerate(history)},

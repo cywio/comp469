@@ -6,6 +6,13 @@ enum Player {
 }
 type Cell = 'X' | 'O' | ' '
 type Board = Cell[][]
+type Suggestion = {
+	column_scores: Record<string, number>
+	top_suggestion: {
+		columns: number[]
+		score: number
+	}
+}
 
 export default function App() {
 	const [maxDepth, setMaxDepth] = useState<number>(4)
@@ -13,13 +20,8 @@ export default function App() {
 	const [winningPlayer, setWinningPlayer] = useState<Player | 'tie' | null>(null)
 	const [currentPlayer, setCurrentPlayer] = useState<Player>(Player.X)
 	const [openLocations, setOpenLocations] = useState<number[]>(Array.from({ length: 6 }).map((_, i) => i))
-	const [currentSuggestion, setCurrentSuggestion] = useState<{
-		column_scores: Record<string, number>
-		top_suggestion: {
-			column: number
-			score: number
-		}
-	} | null>(null)
+	const [autoAI, setAutoAI] = useState<boolean>(true)
+	const [currentSuggestion, setCurrentSuggestion] = useState<Suggestion | null>(null)
 
 	async function makeMove(column: number) {
 		const response = await fetch('/api/move', {
@@ -72,7 +74,13 @@ export default function App() {
 			},
 		})
 		const data = await response.json()
-		setCurrentSuggestion(data)
+
+		if (autoAI && currentPlayer === Player.O) {
+			const randomChoice = data.top_suggestion.columns[Math.floor(Math.random() * data.top_suggestion.columns.length)]
+			makeMove(randomChoice)
+		} else {
+			setCurrentSuggestion(data)
+		}
 	}
 
 	return (
@@ -103,7 +111,10 @@ export default function App() {
 									disabled={!openLocations.includes(j)}
 									className='disabled:opacity-20 group text-white rounded hover:bg-black/25'
 									onClick={() => makeMove(j)}
-									style={{ backgroundColor: currentSuggestion?.top_suggestion.column === j ? 'orange' : undefined }}
+									style={{
+										backgroundColor: currentSuggestion?.top_suggestion.columns.includes(j) ? 'orange' : undefined,
+									}}
+									key={j}
 								>
 									<span className='group-hover:hidden'>{j}</span>
 									<span className='group-hover:block hidden'>↑</span>
@@ -126,7 +137,7 @@ export default function App() {
 						<div className='mt-2'>
 							<b>Current player: {currentPlayer}</b>
 							<p className='text-sm'>
-								Suggestion: Drop into column {currentSuggestion?.top_suggestion.column} (score:{' '}
+								Suggestion: Drop into column(s) {currentSuggestion?.top_suggestion.columns.join(', ')} (score:{' '}
 								{currentSuggestion?.top_suggestion.score ?? '∞'})
 							</p>
 						</div>
@@ -141,6 +152,15 @@ export default function App() {
 						value={maxDepth}
 						max='7'
 						min='1'
+					/>
+				</div>
+				<div className='flex items-center justify-center text-xs mt-5 gap-3 mx-auto'>
+					<p>Auto player?: </p>
+					<input
+						className='w-20 rounded bg-neutral-100 p-1'
+						type='checkbox'
+						onChange={(e) => setAutoAI(e.target.checked)}
+						checked={autoAI}
 					/>
 				</div>
 			</div>
