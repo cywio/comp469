@@ -60,10 +60,10 @@ class Connect4:
 
         # winning/neutral moves
         if player_count == 4:
-            score += 5
-        if other_player == 4:
-            score -= 5
-        if empty_count == 4:
+            score += 4
+        elif other_player == 4:
+            score -= 4
+        elif empty_count == 4:
             score += 0
 
         # with empties in row organized by strength
@@ -76,6 +76,16 @@ class Connect4:
         # 1 curr, 3 empty
         elif player_count == 1 and empty_count == 3:
             score += 1
+
+        # 3 enemy, 1 empty
+        elif other_player_count == 3 and empty_count == 1:
+            score -= 3
+        # 2 enemy, 2 empty
+        elif other_player_count == 2 and empty_count == 2:
+            score -= 2
+        # 1 enemy, 3 empty
+        elif other_player_count == 1 and empty_count == 3:
+            score -= 1
 
         # with enemy in row organized by strength
         # 3 curr, 1 enemy

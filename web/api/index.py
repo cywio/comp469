@@ -8,17 +8,11 @@
 
 from flask import Flask, request
 from lib.game import Connect4
+from lib.util import parse_score
 import json
 import math
 
 app = Flask(__name__)
-
-
-def parse_score(score):
-    if math.isfinite(score):
-        return score
-    is_positive_infinity = score > 0
-    return "-∞" if not is_positive_infinity else "∞"
 
 
 @app.route('/api/suggest', methods=["POST"])

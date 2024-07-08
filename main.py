@@ -7,7 +7,9 @@
 # This file allows you to run it as a cli application
 
 from lib.game import Connect4
+from lib.util import parse_score
 import math
+
 
 if __name__ == '__main__':
     game = Connect4()
@@ -33,8 +35,7 @@ if __name__ == '__main__':
             # You can adjust the depth based on performance needs
             suggested_move, score, row_scores = game.minimax(True)
 
-            print([str('^' if not math.isfinite(i[1]) else i[1])
-                  for i in row_scores], "\n\n")
+            print([parse_score(i[1]) for i in row_scores], "\n\n")
             print(
                 f"Suggested next move for Player {game.get_current_player()}: Column {suggested_move} (score: {score})")
 
