@@ -86,7 +86,7 @@ export default function App() {
 	return (
 		<main className='p-5 mx-auto max-w-lg text-center '>
 			<h1 className='font-bold text-xl'>AI Assisted Connect 4</h1>
-			<p>Kaylee Groves, Jorge Torrez, Brian Ramos, Christian Walsh</p>
+			<p>Kaylee Groves, Jorge Torrez, Brian Rojas, Christian Walsh</p>
 			<div className='max-w-xs mx-auto mt-5'>
 				<div className='bg-blue-500 flex flex-col w-full gap-1 p-1'>
 					{board.map((row, i) => (
