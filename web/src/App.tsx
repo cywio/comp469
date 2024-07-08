@@ -137,7 +137,7 @@ export default function App() {
 						{currentSuggestion?.column_scores && (
 							<div className='grid grid-cols-6'>
 								{Array.from({ length: 6 }).map((_, index) => (
-									<div className='bg-neutral-200 text-xs py-2'>{currentSuggestion?.column_scores[index] ?? '∞'}</div>
+									<div className='bg-neutral-200 text-xs py-2'>{currentSuggestion?.column_scores[index]}</div>
 								))}
 							</div>
 						)}
@@ -145,7 +145,7 @@ export default function App() {
 							<b>Current player: {currentPlayer}</b>
 							<p className='text-sm'>
 								Suggestion: Drop into column(s) {currentSuggestion?.top_suggestion.columns.join(', ')} (score:{' '}
-								{currentSuggestion?.top_suggestion.score ?? '∞'})
+								{currentSuggestion?.top_suggestion.score})
 							</p>
 						</div>
 					</>
