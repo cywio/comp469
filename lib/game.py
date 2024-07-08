@@ -104,7 +104,7 @@ class Connect4:
         return self.player1 if player == self.player2 else self.player2
 
     # https://en.wikipedia.org/wiki/Minimax#Pseudocode
-    def minimax(self, maximizingPlayer, depth=max_look_ahead):
+    def minimax(self, maximizingPlayer, alpha=None, beta=None, depth=max_look_ahead):
         # get columns where i can make a move
         open_columns = self.open_locations()
         is_game_won, winning_player = self.check_if_winning()
@@ -161,19 +161,27 @@ class Connect4:
                     break
             # recursively check and decrease depth to limit recursion
             _, new_score, _ = self.minimax(
-                not maximizingPlayer, depth - 1)
+                not maximizingPlayer, alpha, beta, depth - 1)
             # reset the board to the original state
             self.board[row][col] = ' '
+            # keep track of columns as to not just return the best move
+            columns_and_scores.append([col, new_score])
             # if we get a better high score than previous best, then set new column
-            # to be the best next move
+            # to be the best next move, use alpha beta pruning to reduce the search space
             if maximizingPlayer:
                 # maximize score
                 value = max(value, new_score)
+                if alpha:
+                    alpha = max(alpha, value)
+                    if beta <= alpha:
+                        break  # beta prune
             else:
                 # minimize score
                 value = min(value, new_score)
-            # keep track of columns as to not just return the best move
-            columns_and_scores.append([col, new_score])
+                if beta:
+                    beta = min(beta, value)
+                    if beta <= alpha:
+                        break  # alpha prune
         top_columns = list(map(lambda x: x[0], filter(
             lambda x: x[1] == value, columns_and_scores)))
         return top_columns, value, columns_and_scores

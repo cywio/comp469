@@ -21,6 +21,7 @@ export default function App() {
 	const [currentPlayer, setCurrentPlayer] = useState<Player>(Player.X)
 	const [openLocations, setOpenLocations] = useState<number[]>(Array.from({ length: 6 }).map((_, i) => i))
 	const [autoAI, setAutoAI] = useState<boolean>(true)
+	const [prune, setPrune] = useState<boolean>(true)
 	const [currentSuggestion, setCurrentSuggestion] = useState<Suggestion | null>(null)
 
 	async function makeMove(column: number) {
@@ -68,6 +69,7 @@ export default function App() {
 				board: board,
 				current_player: currentPlayer,
 				max_depth: maxDepth,
+				alpha_beta_prune: prune,
 			}),
 			headers: {
 				'Content-Type': 'application/json',
@@ -168,6 +170,15 @@ export default function App() {
 						type='checkbox'
 						onChange={(e) => setAutoAI(e.target.checked)}
 						checked={autoAI}
+					/>
+				</div>
+				<div className='flex items-center justify-center text-xs mt-5 gap-3 mx-auto'>
+					<p>Alpha beta prune?: </p>
+					<input
+						className='w-20 rounded bg-neutral-100 p-1'
+						type='checkbox'
+						onChange={(e) => setPrune(e.target.checked)}
+						checked={prune}
 					/>
 				</div>
 			</div>

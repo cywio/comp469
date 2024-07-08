@@ -23,8 +23,14 @@ def assist():
     game.board = data['board']
     game.current_player = data['current_player']
 
+    alpha = None
+    beta = None
+    if data["alpha_beta_prune"]:
+        alpha = float("-inf")
+        beta = float("inf")
+
     suggested_move, score, history = game.minimax(
-        True, depth=int(data['max_depth']))
+        True, alpha=alpha, beta=beta, depth=int(data['max_depth']))
 
     response = json.dumps(
         {

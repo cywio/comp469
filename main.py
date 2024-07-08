@@ -33,7 +33,8 @@ if __name__ == '__main__':
 
             # Suggest the next move
             # You can adjust the depth based on performance needs
-            suggested_move, score, row_scores = game.minimax(True)
+            suggested_move, score, row_scores = game.minimax(
+                True, float("-inf"), float("inf"))
 
             print([parse_score(i[1]) for i in row_scores], "\n\n")
             print(
