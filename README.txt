@@ -1,6 +1,6 @@
 Connect 4 with AI assistance
 COMP469 Project — Summer 2024
-A
+
 Christian Walsh
 Kaylee Groves
 Jorge Torrez
