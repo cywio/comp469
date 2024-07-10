@@ -36,11 +36,8 @@ class Connect4:
         return self.current_player
 
     def open_locations(self):
-        open_cols = []
-        for col in range(board_size):
-            if self.board[0][col] == ' ':  # if the top row is empty, then it's still open
-                open_cols.append(col)
-        return open_cols
+        # if the top row is empty, then it's still open
+        return list(filter(lambda x: self.board[0][x] == ' ', range(board_size)))
 
     def make_move(self, column):
         for row in reversed(range(board_size)):
@@ -58,52 +55,59 @@ class Connect4:
         player_count = move.count(player)
         other_player_count = move.count(other_player)
 
+        '''
+            • 0 - column is full or other player wins on the next move
+            • 100 - next move is winning move
+            • 50 - otherwise
+        '''
+
         # winning/neutral moves
         if player_count == 4:
-            score += 4
+            score += 100
         elif other_player == 4:
-            score -= 4
+            score -= 100
         elif empty_count == 4:
-            score += 0
+            score += 50
 
         # with empties in row organized by strength
         # 3 curr, 1 empty
         elif player_count == 3 and empty_count == 1:
-            score += 3
+            score += 52
         # 2 curr, 2 empty
         elif player_count == 2 and empty_count == 2:
-            score += 2
+            score += 51
         # 1 curr, 3 empty
         elif player_count == 1 and empty_count == 3:
-            score += 1
+            score += 50
 
         # 3 enemy, 1 empty
         elif other_player_count == 3 and empty_count == 1:
-            score -= 3
+            score -= 50
         # 2 enemy, 2 empty
         elif other_player_count == 2 and empty_count == 2:
-            score -= 2
+            score -= 49
         # 1 enemy, 3 empty
         elif other_player_count == 1 and empty_count == 3:
-            score -= 1
+            score -= 48
 
-        # with enemy in row organized by strength
+        # with enemy in row organized by strength — these are worse than empty
         # 3 curr, 1 enemy
         elif player_count == 3 and other_player_count == 1:
-            score -= 1
+            score -= 51
         # 2 curr, 2 enemy
         elif player_count == 2 and other_player_count == 2:
-            score -= 2
+            score -= 52
         # 3 enemy, 1 curr
         elif player_count == 1 and other_player_count == 3:
-            score -= 3
+            score -= 53
 
-        return score
+        return score // 50
 
     def get_opponent(self, player):
         return self.player1 if player == self.player2 else self.player2
 
     # https://en.wikipedia.org/wiki/Minimax#Pseudocode
+    # https://canvas.csun.edu/courses/157708/files/24943298 pg 25 - 27
     def minimax(self, maximizingPlayer, alpha=None, beta=None, depth=max_look_ahead):
         # get columns where i can make a move
         open_columns = self.open_locations()
